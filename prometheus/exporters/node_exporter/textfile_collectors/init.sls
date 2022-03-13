@@ -29,7 +29,7 @@ prometheus-exporters-{{ name }}-collector-textfile-dir:
 {%-         if v.get('remove', False) %}
 {%-             set state = ".{}.clean".format(k) %}
 {%-         else %}
-{%-             set state = ".{}".format(k) %}
+{%-             set state = ".{}.install".format(k) %}
 {%-         endif %}
 {%-         do states.append(state) %}
 {%-     endif %}
@@ -41,7 +41,7 @@ prometheus-exporters-{{ name }}-textfile-dependencies:
     - pkgs: {{ p.exporters[name]['textfile_collectors_dependencies'] }}
     - require_in:
 {%-     for state in states %}
-      - sls: {{ state }}
+      - sls: {{ tplroot }}.exporters.{{ name }}.textfile_collectors{{ state }}
 {%-     endfor %}
 
     {%- endif %}
