@@ -9,17 +9,6 @@
 {%- set name = 'node_exporter' %}
 {%- if name in p.wanted.component and 'service' in p.pkg.component[name] %}
 
-{%- for k, v in p.get('exporters', {}).get(name, {}).get('textfile_collectors', {}).items() %}
-{%-     if v.get('enable', False) %}
-{%-         if v.get('remove', False) %}
-{%-             set state = ".{}.clean".format(k) %}
-{%-         else %}
-{%-             set state = ".{}.install".format(k) %}
-{%-         endif %}
-{%-         do states.append(state) %}
-{%-     endif %}
-{%- endfor %}
-
     {%- if 'collector.textfile.directory' in p.pkg.component[name]['service']['args'] %}
 prometheus-exporters-{{ name }}-collector-textfile-dir:
   file.directory:
@@ -33,11 +22,18 @@ prometheus-exporters-{{ name }}-collector-textfile-dir:
     - require:
       - user: prometheus-config-users-install-{{ name }}-user-present
       - group: prometheus-config-users-install-{{ name }}-group-present
-    - require_in:
-{%-     for state in states %}
-      - sls: {{ tplroot }}.exporters.{{ name }}.textfile_collectors{{ state }}
-{%-     endfor %}
     {%- endif %}
+
+{%- for k, v in p.get('exporters', {}).get(name, {}).get('textfile_collectors', {}).items() %}
+{%-     if v.get('enable', False) %}
+{%-         if v.get('remove', False) %}
+{%-             set state = ".{}.clean".format(k) %}
+{%-         else %}
+{%-             set state = ".{}".format(k) %}
+{%-         endif %}
+{%-         do states.append(state) %}
+{%-     endif %}
+{%- endfor %}
 
     {%- if states|length > 0 and p.exporters[name]['textfile_collectors_dependencies'] %}
 prometheus-exporters-{{ name }}-textfile-dependencies:
@@ -45,7 +41,7 @@ prometheus-exporters-{{ name }}-textfile-dependencies:
     - pkgs: {{ p.exporters[name]['textfile_collectors_dependencies'] }}
     - require_in:
 {%-     for state in states %}
-      - sls: {{ tplroot }}.exporters.{{ name }}.textfile_collectors{{ state }}
+      - sls: {{ state }}
 {%-     endfor %}
 
     {%- endif %}
