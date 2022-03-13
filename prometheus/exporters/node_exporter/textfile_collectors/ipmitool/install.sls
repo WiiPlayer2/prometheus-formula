@@ -19,6 +19,7 @@ prometheus-exporters-install-{{ name }}-textfile_collectors-ipmitool:
         {%- if grains.os != 'Windows' %}
     - mode: 755
         {%- endif %}
+    - makedirs: True
   cron.present:
     - identifier: prometheus-exporters-{{ name }}-textfile_collectors-ipmitool-cronjob
     - name: cd {{ dir }} && LANG=C ipmitool sensor | {{ cmd_prefix }}{{ script }} > .ipmitool.prom$$; mv .ipmitool.prom$$ ipmitool.prom

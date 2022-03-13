@@ -23,6 +23,7 @@ prometheus-exporters-install-{{ name }}-textfile_collectors-smartmon:
             {%- if grains.os != 'Windows' %}
     - mode: 755
             {%- endif %}
+    - makedirs: True
   cron.present:
     - identifier: prometheus-exporters-{{ name }}-textfile_collectors-smartmon-cronjob
     - name: cd {{ dir }} && LANG=C {{ script }} > .smartmon.prom$$ && mv .smartmon.prom$$ smartmon.prom
