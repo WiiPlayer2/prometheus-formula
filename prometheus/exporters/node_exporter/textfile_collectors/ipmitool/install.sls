@@ -15,7 +15,7 @@ prometheus-exporters-install-{{ name }}-textfile_collectors-ipmitool:
     - name: {{ config.pkg }}
   file.managed:
     - name: {{ script }}
-    - source: salt://prometheus/exporters-install/{{ name }}/textfile_collectors/files/ipmitool
+    - source: salt://prometheus/exporters/{{ name }}/textfile_collectors/files/ipmitool
         {%- if grains.os != 'Windows' %}
     - mode: 755
         {%- endif %}
