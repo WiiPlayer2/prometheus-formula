@@ -16,14 +16,13 @@ prometheus:
 
   exporters:
     node_exporter:
-      textfile_collectors_dependencies: []
       textfile_collectors:
         ipmitool:
-          enable: false
+          enable: true
           remove: false
           pkg: ipmitool
         smartmon:
-          enable: false
+          enable: true
           remove: false
           pkg: smartmontools
           bash_pkg: bash
@@ -86,7 +85,7 @@ prometheus:
         service:
           args:
             web.listen-address: ":9110"
-            # collector.textfile.directory: /var/tmp/node_exporter
+            collector.textfile.directory: /var/tmp/node_exporter
 
       blackbox_exporter:
         service:
